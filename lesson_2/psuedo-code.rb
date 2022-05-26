@@ -4,16 +4,15 @@
 # add the first number to the second number and save to variable
 # return the result
 
-# # START 
+# # START
 # GET two variables
 # SET added_num to addition of the two numbers
 # PRINT the computed variable added_num
 # # END
 
-def add(x,y)
+def add(x, y)
   added_num = x + y
 end
-
 
 ## a method that takes an array of strings, and returns a string that is all those strings concatenated together ##
 
@@ -23,7 +22,7 @@ end
 # when the loop completes
 # return the concatenated variable
 
-# # START 
+# # START
 # GET array of strings
 # SET concatenated to empty string
 # WHILE there are elements not looked at in array
@@ -34,11 +33,11 @@ end
 
 def concat_str_arr(arr)
   concatenated = ""
-  arr.each {|element| concatenated += element}
+  arr.each { |element| concatenated += element }
   concatenated
 end
 
-### a method that takes an array of integers, and returns a new array with every other element from the original array, starting with the first element. ### 
+### a method that takes an array of integers, and returns a new array with every other element from the original array, starting with the first element. ###
 
 # get the arr of integers
 # initialize variable called every_other and set to empty array
@@ -47,7 +46,6 @@ end
 # access the element in the array at the current_index and push it to the every_other array variable
 # increment current_index by 2
 # end
-
 
 def every_other(arr)
   every_other = []
@@ -65,8 +63,8 @@ end
 # set a variable called index and set to 0
 # while the string at the current index is less than or each to string.length -1
 # check if the current character is equal to the string you are looking for
-  # if it is equal than decrement the variable three times by 1
-  # check if three_times equal to 0 than break out of the while loop early
+# if it is equal than decrement the variable three times by 1
+# check if three_times equal to 0 than break out of the while loop early
 # end
 # finally check if three_times is equal to 0 if yes then return current_index
 # if no, then return nil
@@ -77,18 +75,17 @@ def three_times?(str, char)
   while current_index < str.length
     three_times -= 1 if str[current_index] == char
     break if three_times == 0
-    current_index +=1
+    current_index += 1
   end
   three_times == 0 ? current_index : nil
 end
-
 
 ##### a method that takes two arrays of numbers and returns the result of merging the arrays. The elements of the first array should become the elements at the even indexes of the returned array, while the elements of the second array should become the elements at the odd indexes. #####
 
 # get first array and second array
 # set a variable output_arr to an empty arr
-# set a variable called index to 0 
-# loop while index is less than or equal to first_array 
+# set a variable called index to 0
+# loop while index is less than or equal to first_array
 # take the element in the first array at the current index and push to output_arr
 # take the element in the second array at the current index and push to output_arr
 # increment the index by 1
@@ -105,4 +102,3 @@ def merger(first_arr, second_arr)
   end
   output_arr
 end
-
