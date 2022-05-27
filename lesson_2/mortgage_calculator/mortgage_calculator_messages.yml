@@ -1,0 +1,11 @@
+:welcome_message: "Welcome to our mortgage calculator!"
+
+:query_loan_amount: "How much is your total loan amount?"
+:query_apr: |
+  "How much is your annual percentage rate for this loan?"
+  (Please provide a whole number e.g. if 5% please enter 5)
+:query_duration: "How long is the loan duration in years?"
+:valid_number: "Please enter a valid number."
+:test: "tester"
+:monthly_payment: "Your monthly payment is "
+:restart: Would you like to calculate another loan? (y)
