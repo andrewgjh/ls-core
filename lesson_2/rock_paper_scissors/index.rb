@@ -1,4 +1,12 @@
-VALID_CHOICES = %w(rock paper scissors)
+VALID_CHOICES = %w(rock paper scissors lizard spock)
+
+WIN_CHART = {
+  "rock" => ["scissors", "lizard"],
+  "paper" => ["rock", "spock"],
+  "scissors" => ["paper", "lizard"],
+  "lizard" => ["paper", "spock"],
+  "spock" => ["rock", "scissors"]
+}
 
 def test_method
   prompt("testing")
@@ -9,11 +17,10 @@ def prompt(message)
 end
 
 def win?(first, second)
-  (first == "rock" && second == "scissors") ||
-    (first == "paper" && second == "rock") ||
-    (first == "scissors" && second == "paper")
+  WIN_CHART[first].include?(second)
 end
 
+puts win?("rock", "lizard")
 def display_results(player, computer)
   if win?(player, computer)
     prompt("You won!")
