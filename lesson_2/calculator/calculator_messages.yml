@@ -1,22 +1,48 @@
-welcome: "Welcome to calculator. Enter your name:"
-valid_name: "Make sure you use a valid name."
-first_number: "What is the first number?"
-second_number: "What is the second number?"
-valid_number: "That doesn't look like a valid number."
+en:
+  welcome: "Welcome to calculator. Enter your name:"
+  greetings: "Hello, "
+  valid_name: "Make sure you use a valid name."
+  first_number: "What is the first number?"
+  second_number: "What is the second number?"
+  valid_number: "That doesn't look like a valid number."
 
-operator_valid: "Please choose 1,2,3 or 4"
-another_operation: "Do you want to perform another calculation? (y)"
+  operator_valid: "Please choose 1,2,3 or 4"
+  another_operation: "Do you want to perform another calculation? (y)"
 
-goodbye_message: "Thank you for using the calculator."
+  goodbye_message: "Thank you for using the calculator."
 
-word_add: "Adding"
-word_subtract: "Subtracting"
-word_multiply: "Multiplying"
-word_divide: "Dividing"
-operator_prompt: |
-  What operation would you like to perform? 
-     1)add 
-     2)subtract 
-     3)multiply 
-     4)divide
-operator_message_two_nums: "the two numbers...."
+  word_add: "Adding"
+  word_subtract: "Subtracting"
+  word_multiply: "Multiplying"
+  word_divide: "Dividing"
+  operator_prompt: |
+    What operation would you like to perform? 
+      1)add 
+      2)subtract 
+      3)multiply 
+      4)divide
+  operator_message_two_nums: "the two numbers...."
+es:
+  welcome: "Bienvenido a la calculadora! Entre su nombre:"
+  greetings: "Hola, "
+  valid_name: "Asegúrese de entrar un nombre válido."
+  first_number: "¿Cuál es el primer número?"
+  second_number: "¿Cuál es el segundo número?"
+  valid_number: "Eso no parece un número válido."
+
+  operator_valid: "Por favor elija 1,2,3 o 4"
+  another_operation: "¿Desea realizar otro cálculo? (y)"
+
+  goodbye_message: "Gracias por usar la calculadora."
+
+  word_add: "Agregando"
+  word_subtract: "Restar"
+  word_multiply: "Multiplicar"
+  word_divide: "Dividir"
+  operator_prompt: |
+    ¿Qué operación le gustaría realizar?
+      1) agregar
+      2) restar
+      3) multiplicar
+      4) dividir
+  operator_message_two_nums: "los dos números..."

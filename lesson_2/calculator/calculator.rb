@@ -5,6 +5,10 @@ def prompt(message)
   Kernel.puts("=> #{message}")
 end
 
+def messages(message, lang='en')
+  MESSAGES[lang][message]
+end
+
 def valid_number?(num)
   Integer(num)
 rescue StandardError
@@ -14,65 +18,65 @@ end
 def operation_to_message(op)
   word = case op
          when "1"
-           MESSAGES["word_add"]
+           messages("word_add",lang)
          when "2"
-           MESSAGES["word_subtract"]
+           messages("word_subtract",lang)
          when "3"
-           MESSAGES["word_multiply"]
+           messages("word_multiply",lang)
          when "4"
-           MESSAGES["word_divide"]
+           messages("word_divide",lang)
          end
   word
 end
 
 num1 = ""
-
-prompt(MESSAGES["welcome"])
+lang = "es"
+prompt(messages("welcome",lang))
 name = ""
 loop do
   name = Kernel.gets().chomp()
   if name.empty?()
-    prompt(MESSAGES['valid_name'])
+    prompt(messages('valid_name',lang))
   else
     break
   end
 end
 
-prompt("Hi #{name}")
+prompt("#{messages('greetings',lang)} #{name}")
 loop do # main loop
   loop do
-    prompt(MESSAGES["first_number"])
+    prompt(messages("first_number",lang))
     num1 = gets.chomp
     if valid_number?(num1)
       break
     else
-      prompt(MESSAGES["valid_number"])
+      prompt(messages("valid_number",lang))
     end
   end
 
   num2 = ""
   loop do
-    prompt(MESSAGES["second_number"])
+    prompt(messages("second_number",lang))
     num2 = Kernel.gets().chomp().to_i()
     if valid_number?(num2)
       break
     else
-      prompt(MESSAGES["valid_number"])
+      prompt(messages("valid_number",lang))
     end
   end
-  
-  prompt(MESSAGES["operator_prompt"])
+
+  prompt(messages("operator_prompt",lang))
   operator = ""
   loop do
     operator = Kernel.gets().chomp()
     if %w(1 2 3 4).include?(operator)
       break
     else
-      prompt(MESSAGES["operator_valid"])
+      prompt(messages("operator_valid"),lang)
     end
   end
 
-  prompt("#{operation_to_message(operator)} #{MESSAGES['operator_message_two_nums']}")
+  prompt("#{operation_to_message(operator)} #{messages('operator_message_two_nums', lang)}")
 
   result = case operator
            when "1"
@@ -86,9 +90,9 @@ loop do # main loop
            end
   prompt("The result is #{result}")
 
-  prompt(MESSAGES["another_operation"])
+  prompt(messages("another_operation",lang))
   answer = Kernel.gets().chomp()
   break unless answer.downcase().start_with?("y")
 end
 
-prompt(MESSAGES["goodbye_message"])
+prompt(messages("goodbye_message",lang))
