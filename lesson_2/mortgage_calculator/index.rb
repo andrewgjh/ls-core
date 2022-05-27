@@ -45,5 +45,7 @@ loop do
   prompt(message(:monthly_payment) + \
   "$#{monthly_payment.round(2)} for the next #{duration_months} months.")
   prompt(message(:restart))
-  break if gets.chomp.downcase != 'y'
+  break unless gets.chomp.downcase == 'y'
 end
+
+prompt(message(:goodbye))
