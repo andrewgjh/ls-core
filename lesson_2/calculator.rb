@@ -8,7 +8,11 @@ def prompt(message)
 end
 
 def valid_number?(num)
-  num.to_i != 0
+  begin
+    Integer(num)
+  rescue
+    false
+  end
 end
 
 def operation_to_message(op)
@@ -41,7 +45,7 @@ prompt("Hi #{name}")
 loop do # main loop
   loop do
     prompt("What is the first number?")
-    num1 = Kernel.gets().chomp().to_i()
+    num1 = gets.chomp
     if valid_number?(num1)
       break
     else
@@ -81,13 +85,13 @@ loop do # main loop
 
   result = case operator
            when "1"
-             num1 + num2
+             num1.to_i + num2.to_i
            when "2"
-             num1 - num2
+             num1.to_i - num2.to_i
            when "3"
-             num1 * num2
+             num1.to_i * num2.to_i
            when "4"
-             num1.to_f / num2
+             num1.to_f / num2.to_i
            end
   prompt("The result is #{result}")
 
@@ -97,3 +101,4 @@ loop do # main loop
 end
 
 prompt("Thank you for using the calculator.")
+
