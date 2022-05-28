@@ -8,6 +8,14 @@ WIN_CHART = {
   "spock" => ["rock", "scissors"]
 }
 
+def count_score(player, computer, score_board)
+  if win?(player, computer)
+    score_board[:player] = score_board[:player] + 1
+  elsif win?(computer, player)
+    score_board[:computer] = score_board[:computer] + 1
+  end
+end
+
 def test_method
   prompt("testing")
 end
@@ -20,21 +28,25 @@ def win?(first, second)
   WIN_CHART[first].include?(second)
 end
 
-puts win?("rock", "lizard")
 def display_results(player, computer)
   if win?(player, computer)
-    prompt("You won!")
+    prompt("🏆🏆🏆You won!🏆🏆🏆")
   elsif win?(computer, player)
-    prompt("Computer won!")
+    prompt("👎👎👎Computer won!👎👎👎")
   else
-    prompt("Tie game!")
+    prompt("👔👔👔Tie game!👔👔👔")
   end
 end
+
+score_board = {
+  player: 0,
+  computer: 0
+}
 
 loop do
   choice = ""
   loop do
-    prompt("Choose one: #{VALID_CHOICES.join(', ')}")
+    prompt("Enter choice: #{VALID_CHOICES.join(', ')}")
     choice = gets.chomp
 
     if VALID_CHOICES.include?(choice)
@@ -47,11 +59,16 @@ loop do
   computer_choice = VALID_CHOICES.sample
 
   display_results(choice, computer_choice)
+  count_score(choice, computer_choice, score_board)
 
-  puts "You chose: #{choice} Computer chose: #{computer_choice}"
+  prompt "You chose: #{choice} Computer chose: #{computer_choice}"
+  puts "-------------SCOREBOARD-------------"
+  prompt "Computer: #{score_board[:computer]} Player: #{score_board[:player]}"
+  puts "------------------------------------"
 
-  prompt("Do you want to play again?")
-  break unless gets.chomp.downcase.start_with? 'y'
+  # prompt("Do you want to play again?")
+  # break unless gets.chomp.downcase.start_with? 'y'
+  break if (score_board[:computer] == 3) || (score_board[:player] == 3)
 end
 
 prompt("Hope you had fun. Goodbye!")
