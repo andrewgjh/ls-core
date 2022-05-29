@@ -7,6 +7,13 @@ WIN_CHART = {
   "lizard" => ["paper", "spock"],
   "spock" => ["rock", "scissors"]
 }
+LEGEND = {
+  "r" => "rock",
+  "p" => "paper",
+  "sc" => "scissors",
+  "l" => "lizard",
+  "sp" => "spock"
+}
 
 def count_score(player, computer, score_board)
   if win?(player, computer)
@@ -43,11 +50,21 @@ score_board = {
   computer: 0
 }
 
+choice_prompt = <<-MSG 
+Enter your choice:
+
+r for rock
+p for paper
+l for lizard
+sc for scissor
+sp for spock
+MSG
+
 loop do
   choice = ""
   loop do
-    prompt("Enter choice: #{VALID_CHOICES.join(', ')}")
-    choice = gets.chomp
+    prompt(choice_prompt)
+    choice = LEGEND[gets.chomp]
 
     if VALID_CHOICES.include?(choice)
       break
