@@ -50,7 +50,7 @@ score_board = {
   computer: 0
 }
 
-choice_prompt = <<-MSG 
+choice_prompt = <<-MSG
 Enter your choice:
 
 r for rock

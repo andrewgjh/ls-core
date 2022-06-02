@@ -1,7 +1,7 @@
 ages = { "Herman" => 32, "Lily" => 30, "Grandpa" => 402, "Eddie" => 10 }
 
 ages.include?("Spot")
-ages.has_key?("Spot") # alias for include 
+ages.key?("Spot") # alias for include
 ages.member?("Spot") # alias for include
 
 munsters_description = "The Munsters are creepy in a good way."
@@ -30,7 +30,7 @@ flintstones = %w(Fred Barney Wilma Betty BamBam Pebbles)
 
 advice = "Few things in life are as important as house training your pet dinosaur."
 
-advice.slice!(0,advice.index('house'))
+advice.slice!(0, advice.index('house'))
 
 statement = "The Flintstones Rock!"
 statement.count("t")

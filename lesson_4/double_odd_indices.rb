@@ -15,7 +15,7 @@ def double_odd_indicies(num_arr)
   loop do
     if current_index.odd?
       new_arr << num_arr[current_index] * 2
-    else 
+    else
       new_arr << num_arr[current_index]
     end
     break if current_index >= num_arr.size - 1
@@ -23,7 +23,6 @@ def double_odd_indicies(num_arr)
   end
   new_arr
 end
-
 
 my_numbers = [1, 4, 3, 7, 2, 6]
 p double_odd_indicies(my_numbers)

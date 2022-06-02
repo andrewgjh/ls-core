@@ -6,7 +6,7 @@ produce = {
 }
 
 def select_fruit(produce)
-  produce.select {|_,v| v == "Fruit"}
+  produce.select { |_, v| v == "Fruit" }
 end
 
 # def select_fruit(produce)

@@ -2,7 +2,7 @@ my_numbers = [1, 4, 3, 7, 2, 6]
 
 def double_numbers!(num_array)
   current_index = 0
-  while current_index <= num_array.size - 1 
+  while current_index <= num_array.size - 1
     num_array[current_index] *= 2
     current_index += 1
   end
