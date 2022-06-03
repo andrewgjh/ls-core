@@ -54,15 +54,19 @@ def empty_squares(brd)
 end
 
 def computer_plays_on!(brd)
-  vulnerable_positions = ai_defence(brd)
-  if vulnerable_positions.empty?
-    computer_choice = empty_squares(brd).sample
-  else
-    choice_arr = vulnerable_positions.first.split("").select do |move|
-      brd[move] == INITIAL_MARKER
-    end
-    computer_choice = choice_arr.first
-  end
+  favourable_position = ai_offense(brd)
+  vulnerable_position = ai_defence(brd)
+  computer_choice = if favourable_position
+                      favourable_position.split("").find do |move|
+                        brd[move] == INITIAL_MARKER
+                      end
+                    elsif vulnerable_position
+                      vulnerable_position.split("").find do |move|
+                        brd[move] == INITIAL_MARKER
+                      end
+                    else
+                      empty_squares(brd).sample
+                    end
   brd[computer_choice] = COMPUTER_MARKER
 end
 
@@ -78,16 +82,24 @@ def player_plays_on!(brd)
 end
 
 def ai_defence(brd)
-  WINS.select do |row|
+  WINS.find do |row|
     spaces = row.split("")
     brd.values_at(*spaces).count(PLAYER_MARKER) == 2 &&
-    brd.values_at(*spaces).count(INITIAL_MARKER) == 1 
+      brd.values_at(*spaces).count(INITIAL_MARKER) == 1
+  end
+end
+
+def ai_offense(brd)
+  WINS.find do |row|
+    spaces = row.split("")
+    brd.values_at(*spaces).count(COMPUTER_MARKER) == 2 &&
+      brd.values_at(*spaces).count(INITIAL_MARKER) == 1
   end
 end
 
 def detect_winning_row(brd)
-  WINS.select do |win|
-    win_spots = win.split ""
+  WINS.find do |row|
+    win_spots = row.split ""
     computer_win = win_spots.all? { |spot| brd[spot] == COMPUTER_MARKER }
     player_win = win_spots.all? { |spot| brd[spot] == PLAYER_MARKER }
     computer_win || player_win
@@ -95,10 +107,10 @@ def detect_winning_row(brd)
 end
 
 def who_won(brd, winning_row)
-  case brd[winning_row.first[0]]
+  return nil unless winning_row
+  case brd[winning_row[0]]
   when COMPUTER_MARKER then "Computer"
   when PLAYER_MARKER then "Player"
-  else nil
   end
 end
 
@@ -107,7 +119,7 @@ def display_game_status(brd, winning_row)
   case who_won(brd, winning_row)
   when "Player" then prompt "🏆🏆🏆You Won!🏆🏆🏆"
   when "Computer" then prompt "😱😱😱The Computer Won😱😱😱"
-  else prompt "👔👔👔 It's a Tie Game 👔👔👔" 
+  else prompt "👔👔👔 It's a Tie Game 👔👔👔"
   end
 end
 
@@ -119,7 +131,7 @@ def scorekeeper(scoreboard, winner)
 end
 
 def display_score(scoreboard)
-  puts <<-SCOREBOARD 
+  puts <<-SCOREBOARD
 
 
   ---------------SCOREBOARD--------------------
@@ -133,7 +145,7 @@ end
 prompt 'Welcome to Tic-Tac-Toe. First to 5 points wins the game'
 sleep(1)
 loop do
-  score_board = {player: 0, computer: 0}
+  score_board = { player: 0, computer: 0 }
   loop do
     board = intialize_bord
     display_score(score_board)
@@ -142,9 +154,8 @@ loop do
       display_score(score_board)
       player_plays_on!(board)
       computer_plays_on!(board)
-      # binding.pry
       win_row = detect_winning_row(board)
-      if !win_row.empty? || empty_squares(board).empty?
+      if win_row || empty_squares(board).empty?
         scorekeeper(score_board, who_won(board, win_row))
         display_game_status(board, win_row)
         sleep(2)
