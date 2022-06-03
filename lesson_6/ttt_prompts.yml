@@ -1,0 +1,11 @@
+:welcome: "Welcome to Tic-Tac-Toe. First to 5 points wins the game"
+:goes_first: |
+  "Who will be going first this game?"
+  Press 1 if player is going first.
+  Press 2 if computer is going first.
+:one_or_two: "Please enter 1 or 2."
+:invalid_space: "That is space cannot be used."
+:player_win: "🏆🏆🏆You Won!🏆🏆🏆"
+:computer_win: "😱😱😱The Computer Won😱😱😱"
+:tie_game: "👔👔👔 It's a Tie Game 👔👔👔"
+:goodbye: "Thanks for playing, come back soon!"

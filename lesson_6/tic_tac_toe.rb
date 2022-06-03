@@ -1,5 +1,7 @@
+require 'yaml'
 require 'pry-byebug'
 
+MESSAGES = YAML.load_file('ttt_prompts.yml')
 INITIAL_MARKER = " "
 COMPUTER_MARKER = "O"
 PLAYER_MARKER = "X"
@@ -43,7 +45,7 @@ def display_board(brd)
 end
 # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-def intialize_bord
+def intialize_board
   new_board = {}
   %w(q w e a s d z x c).each { |square| new_board[square] = INITIAL_MARKER }
   new_board
@@ -53,6 +55,7 @@ def empty_squares(brd)
   brd.keys.select { |char| brd[char] == INITIAL_MARKER }
 end
 
+# rubocop:disable Metrics/MethodLength
 def computer_plays_on!(brd)
   favourable_position = ai_offense(brd)
   vulnerable_position = ai_defence(brd)
@@ -64,11 +67,14 @@ def computer_plays_on!(brd)
                       vulnerable_position.split("").find do |move|
                         brd[move] == INITIAL_MARKER
                       end
+                    elsif brd["s"] == INITIAL_MARKER
+                      "s"
                     else
                       empty_squares(brd).sample
                     end
   brd[computer_choice] = COMPUTER_MARKER
 end
+# rubocop:enable Metrics/MethodLength
 
 def player_plays_on!(brd)
   choice = ""
@@ -76,7 +82,7 @@ def player_plays_on!(brd)
     prompt "Choose a square #{joinor(empty_squares(brd))}"
     choice = gets.chomp.downcase
     break if empty_squares(brd).include?(choice)
-    prompt "That is space cannot be used."
+    prompt MESSAGES[:invalid_space]
   end
   brd[choice] = PLAYER_MARKER
 end
@@ -106,7 +112,7 @@ def detect_winning_row(brd)
   end
 end
 
-def who_won(brd, winning_row)
+def who_won?(brd, winning_row)
   return nil unless winning_row
   case brd[winning_row[0]]
   when COMPUTER_MARKER then "Computer"
@@ -116,10 +122,10 @@ end
 
 def display_game_status(brd, winning_row)
   display_board(brd)
-  case who_won(brd, winning_row)
-  when "Player" then prompt "🏆🏆🏆You Won!🏆🏆🏆"
-  when "Computer" then prompt "😱😱😱The Computer Won😱😱😱"
-  else prompt "👔👔👔 It's a Tie Game 👔👔👔"
+  case who_won?(brd, winning_row)
+  when "Player" then prompt MESSAGES[:player_win]
+  when "Computer" then prompt MESSAGES[:computer_win]
+  else prompt MESSAGES[:tie_game]
   end
 end
 
@@ -142,24 +148,50 @@ def display_score(scoreboard)
   SCOREBOARD
 end
 
-prompt 'Welcome to Tic-Tac-Toe. First to 5 points wins the game'
+def display_stats(brd, scoreboard)
+  display_board(brd)
+  display_score(scoreboard)
+end
+
+def each_turn(turn, brd, scoreboard)
+  turn_arr = [method(:player_plays_on!), method(:computer_plays_on!)]
+  turn_arr[turn - 1].call(brd)
+  display_stats(brd, scoreboard)
+  detect_winning_row(brd)
+end
+
+def who_goes_first
+  first = nil
+  loop do
+    prompt MESSAGES[:goes_first]
+    first = gets.chomp.to_i
+    break if first == 1 || first == 2
+    prompt MESSAGES[:one_or_two]
+  end
+  first
+end
+
+prompt MESSAGES[:welcome]
 sleep(1)
 loop do
   score_board = { player: 0, computer: 0 }
   loop do
-    board = intialize_bord
-    display_score(score_board)
-    loop do
-      display_board(board)
-      display_score(score_board)
-      player_plays_on!(board)
-      computer_plays_on!(board)
-      win_row = detect_winning_row(board)
-      if win_row || empty_squares(board).empty?
-        scorekeeper(score_board, who_won(board, win_row))
-        display_game_status(board, win_row)
-        sleep(2)
-        break
+    catch :restart do
+      board = intialize_board
+      first = who_goes_first
+      second = first == 1 ? 2 : 1
+      loop do
+        display_stats(board, score_board)
+        win_row = nil
+        [first, second].each do |turn|
+          win_row = each_turn(turn, board, score_board)
+          if win_row || empty_squares(board).empty?
+            scorekeeper(score_board, who_won?(board, win_row))
+            display_game_status(board, win_row)
+            sleep(1)
+            throw :restart
+          end
+        end
       end
     end
     if score_board.values.include?(5)
@@ -171,4 +203,4 @@ loop do
   again = gets.chomp.downcase
   break unless again.start_with?("y")
 end
-prompt "Thanks for playing, come back soon!"
+prompt MESSAGES[:goodbye]
