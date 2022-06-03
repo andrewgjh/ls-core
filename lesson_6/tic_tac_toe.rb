@@ -3,13 +3,26 @@ require 'pry-byebug'
 INITIAL_MARKER = " "
 COMPUTER_MARKER = "O"
 PLAYER_MARKER = "X"
+WINS = %w(qwe asd zxc qaz wsx edc qsc zse)
 
 def prompt(msg)
   puts "==> #{msg}"
 end
 
+def joinor(arr, delimiter = ", ", last_word="or")
+  case arr.size
+  when 1 then arr[0].to_s
+  when 2 then arr.join(" #{last_word} ")
+  else
+    join_str = arr[0..-2].join(delimiter)
+    join_str << " #{last_word} #{arr[-1]}"
+    join_str
+  end
+end
+
+# rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 def display_board(brd)
-  system "clear"
+  system 'clear'
   puts "           |            |"
   puts "           |            |"
   puts "     #{brd['q']}     |      #{brd['w']}     |      #{brd['e']}"
@@ -28,6 +41,7 @@ def display_board(brd)
   puts "           |            |"
   puts "           |            |"
 end
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
 def intialize_bord
   new_board = {}
@@ -40,14 +54,22 @@ def empty_squares(brd)
 end
 
 def computer_plays_on!(brd)
-  computer_choice = empty_squares(brd).sample
+  vulnerable_positions = ai_defence(brd)
+  if vulnerable_positions.empty?
+    computer_choice = empty_squares(brd).sample
+  else
+    choice_arr = vulnerable_positions.first.split("").select do |move|
+      brd[move] == INITIAL_MARKER
+    end
+    computer_choice = choice_arr.first
+  end
   brd[computer_choice] = COMPUTER_MARKER
 end
 
 def player_plays_on!(brd)
   choice = ""
   loop do
-    prompt "Choose a square #{empty_squares(brd).join(', ')}"
+    prompt "Choose a square #{joinor(empty_squares(brd))}"
     choice = gets.chomp.downcase
     break if empty_squares(brd).include?(choice)
     prompt "That is space cannot be used."
@@ -55,9 +77,16 @@ def player_plays_on!(brd)
   brd[choice] = PLAYER_MARKER
 end
 
+def ai_defence(brd)
+  WINS.select do |row|
+    spaces = row.split("")
+    brd.values_at(*spaces).count(PLAYER_MARKER) == 2 &&
+    brd.values_at(*spaces).count(INITIAL_MARKER) == 1 
+  end
+end
+
 def detect_winning_row(brd)
-  wins = %w(qwe asd zxc qaz wsx edc qsc zse)
-  wins.select do |win|
+  WINS.select do |win|
     win_spots = win.split ""
     computer_win = win_spots.all? { |spot| brd[spot] == COMPUTER_MARKER }
     player_win = win_spots.all? { |spot| brd[spot] == PLAYER_MARKER }
@@ -65,27 +94,65 @@ def detect_winning_row(brd)
   end
 end
 
-def display_game_status(brd, winning_row)
-  display_board(brd)
-  unless winning_row.empty?
-    case brd[winning_row.first[0]]
-    when "X" then prompt "🏆🏆🏆You Won!🏆🏆🏆"
-    else prompt "😱😱😱The Computer Won😱😱😱"
-    end
-  else
-    prompt "👔👔👔 It's a Tie Game 👔👔👔"
+def who_won(brd, winning_row)
+  case brd[winning_row.first[0]]
+  when COMPUTER_MARKER then "Computer"
+  when PLAYER_MARKER then "Player"
+  else nil
   end
 end
 
+def display_game_status(brd, winning_row)
+  display_board(brd)
+  case who_won(brd, winning_row)
+  when "Player" then prompt "🏆🏆🏆You Won!🏆🏆🏆"
+  when "Computer" then prompt "😱😱😱The Computer Won😱😱😱"
+  else prompt "👔👔👔 It's a Tie Game 👔👔👔" 
+  end
+end
+
+def scorekeeper(scoreboard, winner)
+  case winner
+  when "Computer" then scoreboard[:computer] += 1
+  when "Player" then scoreboard[:player] += 1
+  end
+end
+
+def display_score(scoreboard)
+  puts <<-SCOREBOARD 
+
+
+  ---------------SCOREBOARD--------------------
+  PLAYER: #{scoreboard[:player]} 
+  
+  COMPUTER: #{scoreboard[:computer]}
+  ---------------------------------------------
+  SCOREBOARD
+end
+
+prompt 'Welcome to Tic-Tac-Toe. First to 5 points wins the game'
+sleep(1)
 loop do
-  board = intialize_bord
+  score_board = {player: 0, computer: 0}
   loop do
-    display_board(board)
-    player_plays_on!(board)
-    computer_plays_on!(board)
-    win_row = detect_winning_row(board)
-    if not win_row.empty? || empty_squares(board).empty?
-      display_game_status(board, win_row)
+    board = intialize_bord
+    display_score(score_board)
+    loop do
+      display_board(board)
+      display_score(score_board)
+      player_plays_on!(board)
+      computer_plays_on!(board)
+      # binding.pry
+      win_row = detect_winning_row(board)
+      if !win_row.empty? || empty_squares(board).empty?
+        scorekeeper(score_board, who_won(board, win_row))
+        display_game_status(board, win_row)
+        sleep(2)
+        break
+      end
+    end
+    if score_board.values.include?(5)
+      display_score(score_board)
       break
     end
   end
@@ -93,3 +160,4 @@ loop do
   again = gets.chomp.downcase
   break unless again.start_with?("y")
 end
+prompt "Thanks for playing, come back soon!"
