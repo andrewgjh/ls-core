@@ -1,4 +1,18 @@
-:welcome: "Welcome to Tic-Tac-Toe. First to 5 points wins the game"
+:welcome: |
+  "Welcome to Tic-Tac-Toe. First to 5 points wins the game"
+  Please use the following keys to play the game.
+         |       |
+     Q   |   W   |   E
+         |       |
+   ------+-------+------
+         |       |
+     A   |   S   |   D
+         |       |
+   ------+-------+------
+         |       |
+     Z   |   X   |   C
+         |       |
+  Press any key to start.
 :goes_first: |
   "Who will be going first this game?"
   Press 1 if player is going first.

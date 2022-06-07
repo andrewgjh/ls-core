@@ -25,6 +25,7 @@ end
 # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
 def display_board(brd)
   system 'clear'
+  puts "Computer is #{COMPUTER_MARKER} and you are #{PLAYER_MARKER}"
   puts "           |            |"
   puts "           |            |"
   puts "     #{brd['q']}     |      #{brd['w']}     |      #{brd['e']}"
@@ -172,7 +173,7 @@ def who_goes_first
 end
 
 prompt MESSAGES[:welcome]
-sleep(1)
+STDIN.getch
 loop do
   score_board = { player: 0, computer: 0 }
   loop do
@@ -180,8 +181,8 @@ loop do
       board = intialize_board
       first = who_goes_first
       second = first == 1 ? 2 : 1
+      display_stats(board, score_board)
       loop do
-        display_stats(board, score_board)
         win_row = nil
         [first, second].each do |turn|
           win_row = each_turn(turn, board, score_board)
