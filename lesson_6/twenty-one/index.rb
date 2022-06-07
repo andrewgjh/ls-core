@@ -18,7 +18,6 @@ CARD_TYPES = [
   { name: "King", value: 10 }
 ]
 
-
 def prompt(msg)
   puts "===> #{msg}"
 end
@@ -58,8 +57,8 @@ def display_hands(p_hand, d_hand, show_all=false)
   players_hnd = p_hand.map { |card| "#{card[:name]}#{card[:suit]}" }
 
   system "clear"
-  puts "Dealer has: #{dealers_hnd.join(', ')}"
-  puts "Player has: #{players_hnd.join(', ')}"
+  prompt "Dealer has: #{dealers_hnd.join(', ')}"
+  prompt "Player has: #{players_hnd.join(', ')}"
 end
 
 def add_up(hand)
@@ -74,11 +73,13 @@ def busted?(hand)
   add_up(hand) > 21
 end
 
-def dealers_turn!(p_hand,d_hand, deck)
+def dealers_turn!(p_hand, d_hand, deck)
   while add_up(d_hand) < 17
+    sleep(1)
     d_hand << draw_card!(deck)
-    sleep(3)
+    sleep(1)
     display_hands(p_hand, d_hand, true)
+    sleep(1)
   end
 end
 
@@ -106,36 +107,59 @@ def who_won?(p_hand, d_hand)
   dealer_total = add_up(d_hand)
 
   if busted?(d_hand)
-    MESSAGES[:dealer_bust]
+    :dealer_bust
   elsif busted?(p_hand)
-    MESSAGES[:player_bust]
+    :player_bust
   elsif player_total > dealer_total
-    MESSAGES[:player_win]
+    :player_win
   elsif dealer_total > player_total
-    MESSAGES[:dealer_win]
+    :dealer_win
   else
-    MESSAGES[:tie_game]
+    :tie_game
   end
 end
 
-def display_results(p_hand, d_hand)
+def display_results(p_hand, d_hand, outcome, scoreboard)
   display_hands(p_hand, d_hand, true)
   puts MESSAGES[:final_score]
   prompt "Dealer has #{add_up(d_hand)}"
   prompt "Player has #{add_up(p_hand)}"
 
-  prompt who_won?(p_hand, d_hand)
+  puts MESSAGES[outcome]
+  puts "Total games played: #{scoreboard[:games_played]}"
+  puts "Dealer has won #{scoreboard[:dealer]}/#{scoreboard[:best_of]} games"
+  puts "Player has won #{scoreboard[:player]}/#{scoreboard[:best_of]} games."
 end
 
+def tally(scoreboard, outcome)
+  scoreboard[:games_played] += 1
+  case outcome
+  when :player_bust then scoreboard[:dealer] += 1
+  when :player_win then scoreboard[:player] += 1
+  when :dealer_bust then scoreboard[:player] += 1
+  when :dealer_win then scoreboard[:dealer] += 1
+  end
+end
 
+score_board = { dealer: 0, player: 0, games_played: 0, best_of: 0 }
+system 'clear'
 prompt MESSAGES[:welcome_message]
 gets
+
+prompt MESSAGES[:play_times]
+loop do
+  score_board[:best_of] = gets.chomp.to_i
+  break if score_board[:best_of] > 0
+  prompt MESSAGES[:incorrect_times]
+end
+
 loop do
   # 1. Initialize game
   game_deck = shuffled_new_deck
   player_hand = []
   dealer_hand = []
   game_over = false
+  best_of = score_board[:best_of]
 
   # 2. Deal cards to player and dealer
   fresh_deal(player_hand, dealer_hand, game_deck)
@@ -148,11 +172,14 @@ loop do
   #   - repeat until total >= 17
   # 6. If dealer bust, player wins.
   dealers_turn!(player_hand, dealer_hand, game_deck) unless game_over
-  sleep(2)
-  # 7. Compare cards and declare winner.
-  display_results(player_hand, dealer_hand)
 
-  prompt MESSAGES[:play_again]
+  # 7. Compare cards and declare winner.
+  outcome = who_won?(player_hand, dealer_hand)
+  tally(score_board, outcome)
+  display_results(player_hand, dealer_hand, outcome, score_board)
+
+  break if score_board[:player] == best_of || score_board[:dealer] == best_of
+  prompt MESSAGES[:continue_play]
   again = gets.chomp.downcase
   break if again.start_with?("n")
 end
