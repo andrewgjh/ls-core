@@ -1,5 +1,7 @@
-require "pry-byebug"
-CARD_SUITES = ["❤️", "♦️", '♣️', "♠️"]
+require 'yaml'
+
+MESSAGES = YAML.load_file('game_messages.yml')
+CARD_SUITS = ["❤️", "♦️", '♣️', "♠️"]
 CARD_TYPES = [
   { name: "Ace", value: 1 },
   { name: "2", value: 2 },
@@ -16,6 +18,7 @@ CARD_TYPES = [
   { name: "King", value: 10 }
 ]
 
+
 def prompt(msg)
   puts "===> #{msg}"
 end
@@ -23,7 +26,7 @@ end
 def shuffled_new_deck
   standard_deck = []
   CARD_TYPES.each do |card_face|
-    CARD_SUITES.each do |suit|
+    CARD_SUITS.each do |suit|
       fresh_card = card_face.clone
       fresh_card[:suit] = suit
       standard_deck << fresh_card
@@ -71,9 +74,11 @@ def busted?(hand)
   add_up(hand) > 21
 end
 
-def dealers_turn!(hand, deck)
-  while add_up(hand) < 17
-    hand << draw_card!(deck)
+def dealers_turn!(p_hand,d_hand, deck)
+  while add_up(d_hand) < 17
+    d_hand << draw_card!(deck)
+    sleep(3)
+    display_hands(p_hand, d_hand, true)
   end
 end
 
@@ -81,7 +86,7 @@ def players_turn!(p_hand, d_hand, deck, game_over)
   catch :player_done do
     loop do
       display_hands(p_hand, d_hand)
-      prompt "Would you like to hit or stay? Enter 1(hit) or 2(stay)"
+      prompt MESSAGES[:hit_stay]
       loop do
         action = gets.chomp.to_i
         p_hand << draw_card!(deck) if action == 1
@@ -89,7 +94,7 @@ def players_turn!(p_hand, d_hand, deck, game_over)
         game_over = true if busted?(p_hand)
         throw :player_done if action == 2 || game_over
         break if action == 1
-        puts "Incorrect response, please enter 1 to hit, 2 to stay."
+        puts MESSAGES[:reprompt_hit_stay]
       end
     end
   end
@@ -101,27 +106,30 @@ def who_won?(p_hand, d_hand)
   dealer_total = add_up(d_hand)
 
   if busted?(d_hand)
-    "Dealer Busted. Player wins!"
+    MESSAGES[:dealer_bust]
   elsif busted?(p_hand)
-    "Player Busted. Dealer wins!"
+    MESSAGES[:player_bust]
   elsif player_total > dealer_total
-    "Player wins!"
+    MESSAGES[:player_win]
   elsif dealer_total > player_total
-    "Dealer wins!"
+    MESSAGES[:dealer_win]
   else
-    "Tie Game."
+    MESSAGES[:tie_game]
   end
 end
 
 def display_results(p_hand, d_hand)
   display_hands(p_hand, d_hand, true)
-  puts "------------- FINAL TALLY ----------------"
+  puts MESSAGES[:final_score]
   prompt "Dealer has #{add_up(d_hand)}"
   prompt "Player has #{add_up(p_hand)}"
 
   prompt who_won?(p_hand, d_hand)
 end
 
+
+prompt MESSAGES[:welcome_message]
+gets
 loop do
   # 1. Initialize game
   game_deck = shuffled_new_deck
@@ -139,12 +147,14 @@ loop do
   # 5. Dealer turn: hit or stay
   #   - repeat until total >= 17
   # 6. If dealer bust, player wins.
-  dealers_turn!(dealer_hand, game_deck) unless game_over
-
+  dealers_turn!(player_hand, dealer_hand, game_deck) unless game_over
+  sleep(2)
   # 7. Compare cards and declare winner.
   display_results(player_hand, dealer_hand)
 
-  prompt "Would you like to play again? (y/n)"
+  prompt MESSAGES[:play_again]
   again = gets.chomp.downcase
   break if again.start_with?("n")
 end
+
+prompt MESSAGES[:goodbye_message]

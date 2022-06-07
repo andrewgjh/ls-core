@@ -1,0 +1,13 @@
+:welcome_message: |
+  "Hello to the game of 21 (Blackjack). The game is simple, player with points closest or equal to 21 without going over wins.
+  Press [enter] to start."
+:hit_stay: "Would you like to hit or stay? Enter 1(hit) or 2(stay)"
+:reprompt_hit_stay: "Incorrect response, please enter 1 to hit, 2 to stay."
+:dealer_bust: "Dealer Busted. 🏆Player wins!🏆"
+:player_bust: "Player Busted. 😱Dealer wins!😱"
+:dealer_win: "😱😱😱Dealer wins!😱😱😱"
+:player_win: "🏆🏆🏆Player wins!🏆🏆🏆"
+:tie_game: "👔👔👔Tie Game.👔👔👔"
+:final_score: "------------- FINAL SCORE ----------------"
+:play_again: "Would you like to play again? (y/n)"
+:goodbye_message: "We hoped you had fun playing! Come back again soon."
