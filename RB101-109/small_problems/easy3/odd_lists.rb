@@ -1,6 +1,5 @@
 # Write a method that returns an Array that contains every other element of an Array that is passed in as an argument. The values in the returned list should be those values that are in the 1st, 3rd, 5th, and so on elements of the argument Array.
 
-
 # def oddities(arr)
 #   arr.select.with_index{|_, idx| idx.even?}
 # end
@@ -15,7 +14,6 @@
 #   return_arr
 # end
 
-
 def oddities(arr)
   counter = 0
   final_arr = []
@@ -27,7 +25,7 @@ def oddities(arr)
 end
 
 def even_steven(arr)
-  arr.select.with_index{|_, idx| idx.odd?}
+  arr.select.with_index { |_, idx| idx.odd? }
 end
 
 p oddities([2, 3, 4, 5, 6]) == [2, 4, 6]

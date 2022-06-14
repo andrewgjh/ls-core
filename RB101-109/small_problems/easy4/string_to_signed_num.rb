@@ -3,12 +3,11 @@ DIGITS = {
   '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9
 }
 
-
 def string_to_signed_integer(str_int)
   value = 0
   str_int.chars.reverse.each_with_index do |digit, idx|
     if digit == "-"
-     value = -value 
+      value = -value
     elsif DIGITS[digit]
       value += DIGITS[digit] * (10**idx)
     end

@@ -7,7 +7,6 @@ name = gets.chomp.strip.capitalize
 
 if name.size > 0
   random_age(name)
-else 
+else
   random_age
 end
-

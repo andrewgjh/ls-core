@@ -6,7 +6,7 @@ def signed_integer_to_string(int)
   elsif int == 0
     "0"
   else
-  integer_to_string(int).prepend("+")
+    integer_to_string(int).prepend("+")
   end
 end
 

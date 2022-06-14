@@ -3,7 +3,7 @@ require 'pry-byebug'
 def stringy(int)
   counter = 0
   final_str = ""
-  binary_arr = ['1','0']
+  binary_arr = ['1', '0']
   while counter < int
     final_str << binary_arr[counter % 2]
     counter += 1

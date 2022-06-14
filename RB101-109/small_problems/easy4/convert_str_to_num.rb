@@ -3,19 +3,17 @@ DIGITS = {
   '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9
 }
 
-
 def string_to_integer(str_int)
   final_num = 0
   digit_place = 1
   num_arr = str_int.chars
   num_arr.reverse.each do |digit|
     digit_int = DIGITS[digit]
-    final_num += digit_int * digit_place 
+    final_num += digit_int * digit_place
     digit_place *= 10
   end
   final_num
 end
-
 
 # def string_to_integer(string)
 #   digits = string.chars.map { |char| DIGITS[char] }

@@ -2,7 +2,7 @@
 
 def get_num(place)
   puts "Enter the #{place} number:"
-  num = gets.chomp.to_i  
+  num = gets.chomp.to_i
 end
 
 num_arr = []

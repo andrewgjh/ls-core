@@ -1,5 +1,4 @@
-
-puts (1..99).select {|n| n.even?} 
+puts(1..99).select(&:even?)
 
 value = 2
 while value <= 99
