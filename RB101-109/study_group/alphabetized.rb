@@ -3,9 +3,8 @@
 # The input is restricted to contain no numerals and only words containing the english alphabet letters.
 
 # QUESTION
-# should they be ordered by ascii order? 
+# should they be ordered by ascii order?
 # meaning should capital char come before lowercase char
-
 
 =begin
 # ALGO
@@ -18,21 +17,20 @@ call sort on the array of characters and their indexs based on the character
 loop through sorted array and use the index to push char from original str into final str
 return final str
 
-
 =end
 
 def alphabetized(str)
   final_str = ""
   char_arr = str.downcase.chars
-  order_arr =[]
+  order_arr = []
   char_arr.each_with_index do |char, idx|
-    if char.ord.between?(97,122)
-      char_obj = {character: char, index: idx}
+    if char.ord.between?(97, 122)
+      char_obj = { character: char, index: idx }
       order_arr << char_obj
     end
   end
-  order_arr.sort! {|a,b| a[:character] <=> b[:character]}
-  order_arr.each {|obj| final_str << str[obj[:index]]}
+  order_arr.sort! { |a, b| a[:character] <=> b[:character] }
+  order_arr.each { |obj| final_str << str[obj[:index]] }
   final_str
 end
 

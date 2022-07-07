@@ -9,16 +9,16 @@
 # or are they just considered the same letter
 
 # ALGO
-#initialize variable for final return str
+# initialize variable for final return str
 # intialize to starting char A
 
 # start a loop that goes through each character and stops when there are no more characters
 
 #   # use comparison operator <==>
 #   compared the current char and next char
-#   if next char is bigger than or equal 
-#     push the current char into the final str 
-#     increment the index 
+#   if next char is bigger than or equal
+#     push the current char into the final str
+#     increment the index
 #   if next char is smaller
 #     then empty the final str
 #     increment the index
@@ -36,7 +36,7 @@ def longest(str)
     when 0
       final_str << str[counter + 1]
     when 1
-      longest_strs << final_str.dup
+      longest_strs << final_str
       final_str = ""
     end
     if counter >= str.length - 2
@@ -45,13 +45,12 @@ def longest(str)
     end
     counter += 1
   end
-  longest_strs.max {|a,b| a.size <=> b.size }
+  longest_strs.max { |a, b| a.size <=> b.size }
 end
-
 
 p longest('asd') == 'as'
 p longest('nab') == 'ab'
-p longest('abcdeapbcdef') ==  'abcde'
+p longest('abcdeapbcdef') == 'abcde'
 p longest('asdfaaaabbbbcttavvfffffdf') == 'aaaabbbbctt'
 p longest('asdfbyfgiklag') == 'fgikl'
 p longest('z') == 'z'
