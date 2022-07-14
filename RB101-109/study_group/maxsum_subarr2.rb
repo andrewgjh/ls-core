@@ -6,7 +6,7 @@ algo
 create all subarrs
 
 call max to find the first maximum subarray
-then all select to get all of them 
+then call select to get all of them 
 =end
 
 
