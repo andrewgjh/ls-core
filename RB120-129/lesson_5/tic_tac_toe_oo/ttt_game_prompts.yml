@@ -1,0 +1,30 @@
+:welcome: |
+  "Welcome to Tic-Tac-Toe. First to 5 points wins the game"
+  Please use the following keys to play the game.
+         |       |
+     Q   |   W   |   E
+         |       |
+   ------+-------+------
+         |       |
+     A   |   S   |   D
+         |       |
+   ------+-------+------
+         |       |
+     Z   |   X   |   C
+         |       |
+  Enter you name to start the game!
+:goes_first: |
+  "Who will be going first this game?"
+  Press 1 if player is going first.
+  Press 2 if computer is going first.
+
+:choose_move: Choose a square by pressing an available key
+:one_or_two: "Please enter 1 or 2."
+:invalid_choice: "Sorry, that's not a valid choice."
+:invalid_name: "Please enter 1 or more characters."
+:player_win: "🏆🏆🏆You Won!🏆🏆🏆"
+:computer_win: "😱😱😱The Computer Won😱😱😱"
+:tie_game: "👔👔👔 It's a Tie Game 👔👔👔"
+:goodbye: "Thanks for playing, come back soon!"
+:play_again: "Would you like to play again? (y/n)"
+:reprompt_play_again: "Please enter y or n."
