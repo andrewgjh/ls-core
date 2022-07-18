@@ -45,11 +45,9 @@ end
 
 module Migratory
   def migrate; end
-  
 end
 
 class Animal
-
 end
 
 class Bird < Animal
@@ -120,7 +118,6 @@ end
 # mike.last_name = 'Garcia'
 # p mike.full_name # => 'Michael Garcia'
 
-
 # class Student
 #   attr_accessor :name, :grade
 
@@ -139,8 +136,7 @@ end
 # priya.change_grade('A')
 # p priya.grade # => "A"
 
-
-class TestClass 
+class TestClass
   p self
   def self.gallon
     puts self
