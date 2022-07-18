@@ -1,8 +1,9 @@
 class Person
   def age=(num)
-    @age = num*2
+    @age = num * 2
   end
-  def age 
+
+  def age
     @age * 2
   end
 end

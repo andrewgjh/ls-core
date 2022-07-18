@@ -1,15 +1,16 @@
 class Wallet
   include Comparable
-  
+
   def initialize(amount)
     @amount = amount
   end
 
- 
   def <=>(other_wallet)
     amount <=> other_wallet.amount
   end
+
   protected
+
   attr_reader :amount
 end
 

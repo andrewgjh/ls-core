@@ -7,11 +7,11 @@ class Vehicle
 end
 
 class Truck < Vehicle
- 
   def initialize(n)
     super
     start_engine
   end
+
   def start_engine
     puts 'Ready to go!'
   end

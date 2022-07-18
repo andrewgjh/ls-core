@@ -1,5 +1,6 @@
 class Vehicle
   attr_reader :make, :model
+
   def initialize(make, model)
     @make = make
     @model = model
@@ -8,9 +9,7 @@ class Vehicle
   def to_s
     "#{make} #{model}"
   end
-
 end
-
 
 class Car < Vehicle
   def wheels

@@ -1,6 +1,6 @@
 class Person
   attr_reader :first_name, :last_name
-  
+
   def name=(name)
     name_arr = name.split
     @first_name = name_arr[0]
@@ -10,10 +10,8 @@ class Person
   def name
     "#{first_name} #{last_name}".strip
   end
-
 end
 
 person1 = Person.new
 person1.name = 'John Doe'
 puts person1.name
-

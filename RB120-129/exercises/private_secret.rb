@@ -4,6 +4,7 @@ class Person
   def share_secret
     puts secret
   end
+
   private
 
   attr_reader :secret

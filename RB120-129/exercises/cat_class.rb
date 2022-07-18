@@ -13,7 +13,7 @@ class Cat
   def self.generic_greeting
     puts "Hello! I'm a cat!"
   end
-  
+
   def self.total
     puts @@total
   end
@@ -26,14 +26,15 @@ class Cat
   def greet
     puts "Hello my name is #{name}!"
   end
-  
+
   def rename(n)
     self.name = n
   end
-  
+
   def identify
     self
   end
+
   def to_s
     "I'm #{name}!"
   end

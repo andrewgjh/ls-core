@@ -1,6 +1,6 @@
 module Walkable
   def walk
-    puts "#{self.name} #{gait} forward"
+    puts "#{name} #{gait} forward"
   end
 end
 
@@ -49,7 +49,6 @@ class Cheetah
   end
 end
 
-
 mike = Person.new("Mike")
 mike.walk
 # => "Mike strolls forward"
@@ -61,5 +60,3 @@ kitty.walk
 flash = Cheetah.new("Flash")
 flash.walk
 # => "Flash runs forward"
-
-

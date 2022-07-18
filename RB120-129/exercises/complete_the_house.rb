@@ -5,9 +5,9 @@ class House
   def initialize(price)
     @price = price
   end
-  
+
   def <=>(other)
-    self.price <=> other.price
+    price <=> other.price
   end
 end
 
@@ -16,7 +16,6 @@ home2 = House.new(150_000)
 # p home1
 puts "Home 1 is cheaper" if home1 < home2
 puts "Home 2 is more expensive" if home2 > home1
-
 
 # Home 1 is cheaper
 # Home 2 is more expensive

@@ -6,7 +6,6 @@ class Person
   def name
     @name.clone
   end
-
 end
 
 person1 = Person.new('James')

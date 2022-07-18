@@ -3,7 +3,7 @@ class Shelter
     @adopted_list = {}
     @adoptions_avail = []
   end
-  
+
   def found_stray(pet)
     adoptions_avail.push(pet)
   end
@@ -27,18 +27,18 @@ class Shelter
       adopted_list[owner] = [pet]
     end
   end
-  
+
   def print_adopted_list
     adopted_list.each do |owner, pets|
       puts "#{owner.name} has adopted the following pets:"
-      pets.each {|pet| puts pet}
+      pets.each { |pet| puts pet }
       puts ""
     end
   end
 
   private
+
   attr_accessor :adopted_list, :adoptions_avail
-  
 end
 
 class Pet
@@ -49,19 +49,20 @@ class Pet
     @name = name
   end
 
-    def to_s
+  def to_s
     "a #{type} named #{name}"
-  end
-
+end
 end
 
 class Owner
   attr_accessor :pets
   attr_reader :name
+
   def initialize(name)
     @name = name
     @pets = []
   end
+
   def number_of_pets
     pets.size
   end
@@ -90,10 +91,9 @@ shelter.print_adopted_list
 puts "#{phanson.name} has #{phanson.number_of_pets} adopted pets."
 puts "#{bholmes.name} has #{bholmes.number_of_pets} adopted pets."
 
-
-troublesome      = Pet.new('monkey', 'Troublesome')
-cheeky        = Pet.new('pig', 'Cheeky')
-rocky      = Pet.new('bear', 'Rocky')
+troublesome = Pet.new('monkey', 'Troublesome')
+cheeky = Pet.new('pig', 'Cheeky')
+rocky = Pet.new('bear', 'Rocky')
 
 shelter.found_stray(troublesome)
 shelter.found_stray(cheeky)

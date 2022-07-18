@@ -11,5 +11,3 @@ puts person1.phone_number
 
 person1.phone_number = 9987654321
 puts person1.phone_number
-
-

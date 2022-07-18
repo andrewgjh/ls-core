@@ -12,7 +12,6 @@ class Wedding
       preparer.prepare_wedding(self)
     end
   end
-
 end
 
 class Chef

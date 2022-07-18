@@ -1,5 +1,6 @@
 class Person
   attr_reader :name
+
   def name=(n)
     @name = n.capitalize
   end
