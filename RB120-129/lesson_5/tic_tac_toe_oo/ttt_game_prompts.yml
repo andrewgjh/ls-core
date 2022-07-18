@@ -1,6 +1,7 @@
 :welcome: |
-  "Welcome to Tic-Tac-Toe. First to 5 points wins the game"
+  "Welcome to Tic-Tac-Toe."
   Please use the following keys to play the game.
+  We will randomly select who goes first
          |       |
      Q   |   W   |   E
          |       |
@@ -12,14 +13,21 @@
          |       |
      Z   |   X   |   C
          |       |
-  Enter you name to start the game!
-:goes_first: |
-  "Who will be going first this game?"
-  Press 1 if player is going first.
-  Press 2 if computer is going first.
+:mark: |
+  What would you like to be your game marker?
+  Please enter any one single character.
+:name: Enter you name to start the game!
+:invalid_mark: Sorry, that is an invalid marker.
+:which_computer: Which opponent would you like to face?
+:which_computer: |
+  Which opponent would you like to face? Enter a number between 1 to 4
+  1)CP30
+  2)R2D2
+  3)Voldemort
+  4)Skylink
+:invalid_computer: That is an invalid choice, only enter one character between 1 to 4.
 
 :choose_move: Choose a square by pressing an available key
-:one_or_two: "Please enter 1 or 2."
 :invalid_choice: "Sorry, that's not a valid choice."
 :invalid_name: "Please enter 1 or more characters."
 :player_win: "🏆🏆🏆You Won!🏆🏆🏆"
