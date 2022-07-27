@@ -1,22 +1,26 @@
 # STUDY GUIDE
 
 - [x] Classes and objects
-- [ ] Variable Scope
+- [x] Variable Scope
+  - Inheritance and Variable Scope
+- [x] Method Overriding
+- [x] super
 - [x] Use attr\_\* to create setter and getter methods
 - [x] How to call setters and getters
 - [x] Instance methods vs. class methods
 - [x] Method Access Control
 - [x] Referencing and setting instance variables vs. using getters and setters
 - [x] Class inheritance, encapsulation, and polymorphism
+- [x] Duck Typing
 - [x] Modules
 - [x] Method lookup path
 - [x] self
-  1. Calling methods with self
-  2. More about self
-- [ ] Equality
-- [ ] Fake operators
-- [ ] Working with collaborator objects
-- [ ] Reading OO code
+  - Calling methods with self
+  - More about self
+- [x] Equality
+- [x] Fake operators
+- [x] Working with collaborator objects
+- [x] Exceptions
 
 ---
 
@@ -41,6 +45,49 @@
 
     - different objects instantiated from the same class will have the same behaviours
       - but can maintain different states through their attributes
+
+---
+
+## Variable Scope and Inheritance
+
+1. Instance Variable Scope
+
+- `@instance_variable` are scoped to instances of a class (at the object level)
+- they are created by appending `@` symbol in front of the variable name
+- there use is to track attributes that make up the state of an object of a certain class
+- they can be accessed and created inside any instance methods of that object without the need to be passed in as an argument
+- they are not able to be directed accessed/modified outside from outside of the object, setter/getter methods must be used to interact with the instance variable
+  > ### Inheritance
+  >
+  > - With regards to class inheritance, instance variables are not inherited, only instances methods are inherited
+  > - therefore if an instance method initializes an instance variable in the superclass, it will look like the instance variable was also inherited in the subclass
+  > - however if an instance method was overriden in the subclass, the instance variable initialized in the superclass will not be initialized in the subclass and will evaluate to `nil` until it is initialized in the overriden instance method or any other method in the subclass (not just the method definition, intialization means the method actually gets called)
+
+2. Class Variable Scope
+
+- `@@class_variables` are scoped to the class level and all objects instantiated by the class will share the same class variable
+- it is initialized by appending `@@` in front of the variable name and defined on the class itself
+- it can be accessed and munipulated by class methods and instance methods and do not need to be passed in as an argument
+
+  > ### Inheritance
+  >
+  > - a subclass is able to access the class variables of a superclass
+  > - in fact the subclass is also referencing the same copy of the class variable from the super class and therefore it would affect the superclass as well if the class variable is reassigned or mutated
+  > - for this reason, it is recommended to avoid class variable when working with inheritance
+
+3. Constant Variable Scope
+
+- constant variables are variables that should not be reassigned (ruby will not stop you from reassigning it but will output a warning indicating that this should not be done - no error will be raised)
+- they have lexical scope meaning that they are available in the surrounding stucture that it is defined
+- it searched for the constant within the class or module they are defined and will continue to look outwards to outer modules / class that enclose the
+  where the CONSTANT is called
+  - it is not able to access the CONSTANT if it is inside an adjacent module/ class
+    > ### Inheritance
+    >
+    > - after ruby tries to resolve a CONSTANT lexically and cannot find the CONSTANT,
+    > - it will go up the lookup path found by calling `.ancestors`
+    > - starting at the class/ module where the CONSTANT was referred to
+    > - therefore it might be good practice to append `self.class::CONSTANT` when referencing the constant in a method that is inherited from a module or superclass while the CONSTANT is initialized in a subclass
 
 ---
 
@@ -100,7 +147,7 @@ end
 ## How to call Setters AND Getters
 
 - when using the getter method outside of the object to access the instance variable you can write this code `person.name`
-  - where the `person` refers an instance of an `Person` class
+  - where the `person` refers to an instance of a `Person` class
 - when accessing the instance variable from within the object perhaps in another instance method, you can simple call the method `name`
 
   \*\* _you can also use `self.name` to call the method but this is not recommended as `self` should be avoided when unnnecessary_\*\*
@@ -203,6 +250,26 @@ class FreeWeight < GymEquipment; end;
   - however under the hood, they may perform very different tasks and the return values will be unique to each object calling the `attack` method
 - however for our purposes, we only care that we can call the `attack` method on whichever object we happen to be working with at that time.
 
+---
+
+## Method Overriding and Super
+
+- when dealing with inheritance, instance methods from a superclass will be inherited by a subclass
+  - but there are scenarios where you don't actually want the subclass instance method to do the same thing as the superclass
+  - this is when you would rewrite the subclass instance method to override the superclass method
+    - in essence during method lookup, it will find the instance method in its own class definition and not traverse to the superclass to find that method
+- however sometimes you still want the functionability provided my the superclass instance method and simply want to add to that functionality
+
+  - this is when you can call the `super` method which gets the method of the same name and from the super class and runs that inside the overriden instance method
+
+- when dealing with `super` it is important to note the scenarios for what happens to arguments that are passed into the overrriden instance method based on how you call `super`
+
+1. `super` => this will pass on the arguments passed into the method to super, even if there are too many or too little
+2. `super()` => this will call the superclass method without passing any arguments to it
+3. `super(name, age)` => the final option is to list out all the required arguments to be passed to super and keep remainding ones for the method implementation itself
+
+---
+
 ## Modules
 
 - A module has several purposes
@@ -266,6 +333,8 @@ Bookstore.restock_shelf
 Bookstore::display_bestseller
 ```
 
+---
+
 ## Method Lookup Path
 
 - This is the order in which ruby will go looking for a method when called by an object
@@ -286,13 +355,46 @@ end
 
 ```
 
+---
+
 ## Self
 
 - `self` represents different things depending on where it is called
-  1. from within an instance method, it is referring to the calling object
-  - it is necessary to use `self` when calling setter methods inside instance methods because this makes it explicit that you are calling a method instead of initializing a local variable and assigning it a value
-  2. from outside of an instance method and within the class definition, it is referring to the class itself.
-  - as `self` within the class definition refers to the class being defined, it is appended in front of any method definitions that are class methods that are to be called on the class itself
+
+1. from within an instance method, it is referring to the calling object
+
+- it is necessary to use `self` when calling setter methods inside instance methods because this makes it explicit that you are calling a method instead of initializing a local variable and assigning it a value
+
+```ruby
+class Dishwasher
+  attr_accessor :detergent_added
+  def initialize
+    @load = []
+    @detergent_added = false
+  end
+
+  def start_dishwasher
+    # self appended in front of setter method detergent_added otherwise it will initialize a local variable detergent_added instead of modifying the instance variable @detergent_added
+    self.detergent_added = true
+  end
+end
+```
+
+2. from outside of an instance method and within the class definition, it is referring to the class itself.
+
+- as `self` within the class definition refers to the class being defined, it is appended in front of any method definitions that are class methods that are to be called on the class itself
+
+```ruby
+class Dishwasher
+  @@manufacturer = "BOSCH"
+  # the self in front of the method creates a class method which is called on the class itself without instantiating an object of that class
+  def self.manufacturer
+    @@manufacturer
+  end
+end
+```
+
+---
 
 ## Equality
 
@@ -352,3 +454,92 @@ array_one.equal? array_one #true
 ```
 
 3. `===`
+
+- this is another instance method that is used implicitly when working with `case` statements
+- it checks if the calling object is a group, the argument inputted is a part of that group
+
+```ruby
+# these are all true because the caller being the group, the input argument all below to their respective group
+String === "hello" # true
+Array === [1, 2, 3] # true
+(1..50) === 38 # true
+
+#obviously false because input argument is not part of the group
+Symbol === "I want to be a :sym" #false
+:hello === "hello" #false
+```
+
+4. `eql?`
+   -the `eql?` method returns `true` if obj and other refer to the same hash key
+   - it determines if two objects contain the same value and they are of the same class
+
+## Fake Operators
+
+- in ruby there are many instance methods in classes when written look like operators because ruby provide special syntax
+  - therefore when we create our own custom classes, we can override these instance methods to provide a return value that is custom to our own class
+    here is a list of custom methods that look like operators in ruby
+- `#[]` => collection getter
+- `#[]=` => collection setter
+- `#**` => exponential operator
+- `#!` => not
+- `#~` => complement (flips the bits)
+- `#+@` => unary plus
+- `#-@` => unary minute
+- `#*` => multiply
+- `#/` => divide
+- `#%` => modulo
+- `#+` => binary plus
+- `#-` => binary minus
+- `#>>` => right shift
+- `#<<` => left shift
+- `#&` => bitwise and
+- `#^` => bitwise xor
+- `#|` => bitwise or
+- `#<=` => less than or equal
+- `#<` => less than
+- `#>` => greater than
+- `#>=` => greater than or equal
+- `#<=>` => equality (spaceship)
+- `#==` => equality
+- `#===` => group equality
+- `#!=` => not equal
+- `#=~` => String pattern matching (regex)
+- `#!~` => Not matching pattern (regex)
+
+## Collaborator Objects
+
+- Objects that are designed to be stored in the state of another object
+  - collaboration may not occur when object is initialized but later on when certain method is called and the object state is changed
+  - however the it is considered a collaborator object based on the design/intention of the program before the state reflects this collaboration
+- Colloborator objects are also said to send or be sent messages between each other
+- they can be any type of object class from Array, Hash, String to custom classes
+- can usually be conceptualized by a has-a relationship
+  - a library has books => books are collaborator objects to books
+  - a restaraunt has food => food is a collaborator object to restaurant
+  - a company has employees => employees are collaborator objects in company
+
+## Exceptions
+
+- exceptions are exceptional states in a program
+- in ruby the top of the hierachy is the `Exception` class
+  - all other exceptions are subclassed from ths exception
+- handling an exception is meant to provide a graceful way for your program to handle a situation that did not follow your happy path
+- if exceptions are not handled, it will halt execution of your program usually displaying the exception that was raised
+
+  - you can handle exceptions by using the `rescue` block and specifying the type of exception that you want to handle and the code/action you would like to take given that exception
+
+  ```ruby
+  begin
+  # some code at risk of failing
+  rescue RuntimeError
+    #display the error message
+  rescue ArgumentError
+    # do some other action reacted to the argument error
+  end
+  ```
+
+  - it is important not to handle the top level `Exception` class and be specific about the types of exceptions that you would like to handle
+  - within the `begin/rescue` block, you can add an `ensure` block if there is something that you would like to at the end of the exception handling
+  - such as closing a file that you try to read/write
+
+- you can also `raise` your own exceptions from any of the `StandardError` class or even create your own exception by subclassing from one of the exception classes
