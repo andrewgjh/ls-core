@@ -8,6 +8,5 @@ def select(arr)
   selected_arr
 end
 
-
-a = select([1,2,3,4,5,6,7,8]) {|num| puts num}
+a = select([1, 2, 3, 4, 5, 6, 7, 8]) { |num| puts num }
 p a

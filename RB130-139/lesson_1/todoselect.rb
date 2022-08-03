@@ -33,7 +33,6 @@ class Todo
   end
 end
 
-
 # This class represents a collection of Todo objects.
 # You can perform typical collection-oriented actions
 # on a TodoList object, including iteration and selection.
@@ -53,7 +52,7 @@ class TodoList
     @todos << to_do
   end
 
-  alias_method :add, :<< 
+  alias add <<
 
   def size
     @todos.size
@@ -72,7 +71,7 @@ class TodoList
   end
 
   def done?
-    @todos.all? {|todo| todo.done?}
+    @todos.all?(&:done?)
   end
 
   def item_at(idx)
@@ -88,11 +87,11 @@ class TodoList
   end
 
   def done!
-    @todos.each {|todo| todo.done!}
+    @todos.each(&:done!)
   end
 
   def shift
-    @todos.shift  
+    @todos.shift
   end
 
   def pop
@@ -103,11 +102,9 @@ class TodoList
     raise IndexError unless (0..@todos.size).member?(idx)
     @todos.delete_at(idx)
   end
-  
-
 
   def to_s
-    output ="---- #{title} ----\n"
+    output = "---- #{title} ----\n"
     output += @todos.map(&:to_s).join("\n")
     output
   end
@@ -116,7 +113,7 @@ class TodoList
     index = 0
     while index < @todos.size
       yield(@todos[index]) if block_given?
-      index +=1 
+      index += 1
     end
     self
   end
@@ -130,7 +127,6 @@ class TodoList
   end
 end
 
-
 todo1 = Todo.new("Buy milk")
 todo2 = Todo.new("Clean room")
 todo3 = Todo.new("Go to gym")
@@ -142,6 +138,6 @@ list.add(todo3)
 
 todo1.done!
 
-results = list.select { |todo| todo.done? }    # you need to implement this method
+results = list.select(&:done?) # you need to implement this method
 
 puts results.inspect

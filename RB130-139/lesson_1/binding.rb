@@ -12,10 +12,8 @@
 #   p block_given?
 # end
 
-
 # welcome('Hello') # => Hello there
 # # welcome('Hey') { 'Joe' } # => Hey Joe
-
 
 # def true_or_false(&block)
 #   puts "The block is #{block.call}"
@@ -44,5 +42,5 @@ def xyz(collection)
 end
 
 xyz(ARRAY) do
-  p xyz([1,2,3])
+  p xyz([1, 2, 3])
 end

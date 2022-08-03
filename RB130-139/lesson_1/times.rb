@@ -9,7 +9,6 @@ def do_times(num)
   num
 end
 
-
 # explicit block
 def times(num, &block)
   counter = 0
