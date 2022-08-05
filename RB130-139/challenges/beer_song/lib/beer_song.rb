@@ -1,16 +1,15 @@
 class BeerSong
-
   def self.verse(beer)
-      bottle_first, bottle_second = bottle_string(beer)
-      tense = beer - 1 == 0 ? "it" : "one"
-      first_sentence = "#{any?(beer).capitalize} #{bottle_first} of beer on the wall, #{any?(beer)} #{bottle_first} of beer.\n"
-      second_sentence = "Take #{tense} down and pass it around, #{any?(beer - 1)} #{bottle_second} of beer on the wall.\n"    
-      second_sentence = "Go to the store and buy some more, 99 bottles of beer on the wall.\n" if beer == 0
-      first_sentence + second_sentence
+    bottle_first, bottle_second = bottle_string(beer)
+    tense = beer - 1 == 0 ? "it" : "one"
+    first_sentence = "#{any?(beer).capitalize} #{bottle_first} of beer on the wall, #{any?(beer)} #{bottle_first} of beer.\n"
+    second_sentence = "Take #{tense} down and pass it around, #{any?(beer - 1)} #{bottle_second} of beer on the wall.\n"
+    second_sentence = "Go to the store and buy some more, 99 bottles of beer on the wall.\n" if beer == 0
+    first_sentence + second_sentence
   end
 
   def self.verses(start, ending)
-    (start.downto(ending)).map do|bottle|
+    (start.downto(ending)).map do |bottle|
       verse(bottle)
     end.join("\n")
   end
@@ -30,7 +29,6 @@ class BeerSong
     else ["bottles", "bottles"]
     end
   end
-
 end
 
-p BeerSong.verses(99,98)
+p BeerSong.verses(99, 98)

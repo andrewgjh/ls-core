@@ -1,4 +1,3 @@
-
 # class Diamond
 #   def self.make_diamond(end_letter)
 #     spacing = end_letter.ord - "A".ord + 1

@@ -1,7 +1,7 @@
 class Clock
   MIN_PER_HOUR = 60
   HOURS_PER_DAY = 24
- 
+
   def initialize(hour, min)
     @hour = hour
     @min = min
@@ -12,7 +12,7 @@ class Clock
   end
 
   def to_s
-    sprintf("%02d:%02d", hour, min) 
+    format("%02d:%02d", hour, min)
   end
 
   def -(mins)
@@ -27,16 +27,17 @@ class Clock
     Clock.new(hour, min)
   end
 
- 
-
   def ==(other)
     hour == other.hour &&
-    min == other.min
+      min == other.min
   end
+
   protected
+
   attr_reader :hour, :min
 
   private
+
   attr_writer :hour, :min
 
   def adjust
@@ -69,7 +70,6 @@ class Clock
       end
     end
   end
-
 end
 
 # class Clock
@@ -102,9 +102,6 @@ end
 #   end
 
 # end
-
-
-
 
 # class Clock
 #   attr_reader :hour, :minute
