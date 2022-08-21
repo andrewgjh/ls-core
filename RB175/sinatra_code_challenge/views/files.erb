@@ -1,0 +1,21 @@
+<!doctype html>
+  <html>
+    <head>
+      <title>Files</title>
+      <meta name="description" content="Our first page">
+      <meta name="keywords" content="html tutorial template">
+    </head>
+    <body>
+      <h1>Files in Public</h1>
+      <% @files.each do |file_name|%>
+        <p><a href="<%= file_name %>"><%= file_name %></a></p>
+      <% end %>
+
+      <% if params[:sort]%>
+        <a href='/'>Sort Ascending</a>
+      <% else %>
+        <a href="/?sort=desc">Sort Descending</a>
+      <% end %>
+
+    </body>
+  </html>

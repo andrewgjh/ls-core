@@ -1,0 +1,12 @@
+<h2>Email: <%= @email %></h2>
+<h2>Interests: <%= @interests %></h2>
+
+<h5>Other Users</h5>
+<% @users.each do |user|%>
+  <% unless user == @username %>
+    <li>
+      <a href='/user/<%=user %>'><%=user %></a>
+    </li>
+  <% end %>
+<% end %>
+
