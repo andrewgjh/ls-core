@@ -1,9 +1,9 @@
 
 <ul id='lists'>
   <% @lists.each do |list| %>
-    <li>
-      <a href='/lists/<%= list[:name] %>'>
-        <h2><%= list[:name] %></h2>
+    <li class=<%= css_classes(list) %>>
+      <a href='/lists/<%= h(list[:id]) %>'>
+        <h2><%= h(list[:name]) %></h2>
         <p><%= count_completed(list[:todos]) %>/<%= list[:todos].size %></p>
       </a>
     </li>

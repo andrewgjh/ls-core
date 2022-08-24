@@ -1,33 +1,33 @@
-<section id='todos' class=<%= @list_complete && has_tasks?(@list) ? "complete" : "" %>>
+<section id='todos' class=<%= css_classes(@list) %>>
   <header>
     <h2>
-      <%= @name %>
+      <%=h(@name) %>
     </h2>
     <ul>
     <% if has_tasks?(@list) && !all_complete?(@list[:todos]) %>
       <li>
-        <form action='/lists/<%= @name%>/complete_all' method='post'>
+        <form action='/lists/<%= h(@name) %>/complete_all' method='post'>
           <button class='check' type='submit'>Complete All</button> 
         </form>
       </li>
     <% end %>
    
       <li>
-       <a class='edit' href='/lists/<%= @name%>/edit'>
+       <a class='edit' href='/lists/<%= h(@name) %>/edit'>
        Edit List</a>
       </li>
     </ul>
   </header>
 
   <ul>
-    <% @list[:todos].each_with_index do |todo, idx| %>
+    <% todo_sort(@list[:todos]) do |todo, idx| %>
     <li class=<%= todo[:completed] ? "complete" : "" %>>
-      <form class='check' action='/lists/<%= @name %>/todos/<%= idx %>' method='post'>
+      <form class='check' action='/lists/<%= h(@name) %>/todos/<%= h(idx) %>' method='post'>
         <input type='hidden' name='completed' value=<%= !todo[:completed] %>>
         <button type="submit">Complete</button>
       </form>
-      <h3><%= todo[:list_item] %></h3>
-      <form class='delete' action='/lists/<%= @name %>/todos/<%= idx %>/destroy' method='post'>
+      <h3><%= h(todo[:list_item]) %></h3>
+      <form class='delete' action='/lists/<%= h(@name) %>/todos/<%= h(idx) %>/destroy' method='post'>
         <button type='submit'>Delete</button>
       </form>
     </li>
@@ -36,7 +36,7 @@
 </section>
 
 
-<form action="/lists/<%= @name %>" method='post'>
+<form action="/lists/<%= h(@name) %>" method='post'>
   <dl>
     <dt>
       <label for='list_item'>Enter new list item:</label>

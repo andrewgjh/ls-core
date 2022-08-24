@@ -1,9 +1,9 @@
 <section id='todos'>
 <header>
-  <h2>Editing '<%= @name%>'</h2>
+  <h2>Editing '<%= h(@name) %>'</h2>
   <ul>
    <li> 
-    <form action="/lists/<%= @name%>/destroy" method='post'>
+    <form class='delete' action="/lists/<%= h(@name) %>/destroy" method='post'>
       <button class='delete' type='submit'>Delete List</button>
     </form>
    </li>
@@ -11,18 +11,18 @@
 </header>
 </section>
 
-<form action="/lists/<%= @name%>/edit" method='post'>
+<form action="/lists/<%= h(@name) %>/edit" method='post'>
   <dl>
     <dt>
       <label for='new_name'>Enter the new name for your list:</label>
     </dt>
     <dd>
-      <input name='new_name' placeholder="List Name" type='text' value=<%= params[:new_name] || @name %>>
+      <input name='new_name' placeholder="List Name" type='text' value=<%= h(params[:new_name] || @name) %>>
     </dd>
   </dl>
   <fieldset class='actions'>
     <input type='submit' value="Save">
-    <a href='/lists/<%= @name%>'> Cancel</a>
+    <a href='/lists/<%= h(@name) %>'> Cancel</a>
   </fieldset>
 </form>
 
