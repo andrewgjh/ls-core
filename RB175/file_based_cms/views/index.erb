@@ -1,0 +1,9 @@
+
+<ul>
+  <% @files.each do |file| %>
+    <li class='document-list'>
+    <a class ='document' href='/<%= hattr(file) %>'><%= file %></a> 
+    <a class ='edit-button' href='/<%= hattr(file) %>/edit'>Edit Document</a>
+    </li>
+  <% end %>
+</ul>

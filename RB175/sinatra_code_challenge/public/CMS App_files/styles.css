@@ -1,0 +1,10 @@
+.edit-button, .edit-button::after, .edit-button:link {
+  text-decoration: none;
+  color:darkcyan; 
+  padding: 1em;
+  margin: 1em;
+  border-style: 2px solid
+}
+.edit-button:hover {
+  color:aquamarine;
+}
