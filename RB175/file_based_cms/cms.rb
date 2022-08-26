@@ -73,7 +73,6 @@ end
 configure do
   enable :sessions
   set :session_secret, 'secret_key'
-  
 end
 
 helpers do
@@ -111,13 +110,14 @@ end
 
 post '/new' do
 
+
   new_file = params[:document_name]
   unless exists?(new_file)
     create(new_file)
     redirect '/'
   else
     session[:message] = "#{new_file} already exists."
-    erb :index
+    redirect '/'
   end
   
 end
@@ -131,6 +131,7 @@ post '/login' do
   password = params[:password]
   verify username, password
   if authenticated?
+    session[:message] = "Welcome"
     redirect "/"
   else
     redirect "/login"

@@ -13,6 +13,10 @@ def create_document(name, content = "")
   end
 end
 
+def session
+  last_request.env["rack.session"]
+end
+
 
 class CMSTest < MiniTest::Test
   include Rack::Test::Methods
@@ -23,6 +27,7 @@ class CMSTest < MiniTest::Test
 
   def setup
     FileUtils.mkdir_p(data_path)
+    post "/login", {username: "admin", password: "topsecretpassword"}
   end
     def teardown
     FileUtils.rm_rf(data_path)
@@ -55,9 +60,12 @@ class CMSTest < MiniTest::Test
   def test_file_does_not_exist
     get "/fake.txt"
     assert_equal 302, last_response.status
+    expected = "'fake.txt' does not exist."
+    assert_equal expected, session[:message]
+
     get last_response["Location"]
     assert_equal 'text/html;charset=utf-8', last_response["Content-Type"]
-    expected = "'fake.txt' does not exist"
+    
     assert_includes last_response.body, expected
     get '/'
     refute_includes last_response.body, expected
@@ -98,16 +106,21 @@ Check out the [documentation](https://ruby-doc.org/)
   end
 
   def test_edit_file
-    create_document '.changes.txt'
+    create_document 'changes.txt'
     first_text = "Tumeric migas live-edge, wolf fixie kickstarter four dollar toast craft beer truffaut enamel pin bodega boys. Wolf man bun listicle beard. Slow-carb hashtag celiac, copper mug keffiyeh kogi small batch tumblr bicycle rights 3 wolf moon hexagon you probably haven't heard of them PBR&B disrupt. Kale chips thundercats pork belly, whatever hexagon polaroid before they sold out listicle. Blog offal aesthetic pabst, kinfolk authentic iceland normcore selvage pour-over you probably haven't heard of them DIY man braid snackwave brunch. Kale chips meggings authentic synth try-hard."
     post "/changes.txt", file_content: first_text
     get "/changes.txt"
     assert_equal last_response.body, first_text
 
+    assert_equal 'changes.txt has been successfully changed.', session[:message]
+
     second_text = "Hammock DIY small batch, craft beer vexillologist venmo pickled. Dreamcatcher try-hard quinoa, ascot kinfolk normcore forage mukbang craft beer pabst before they sold out skateboard pitchfork. Shabby chic tbh banjo, keffiyeh synth marfa palo santo occupy tilde glossier. Vegan flexitarian coloring book tacos."
     post "/changes.txt", file_content: second_text
     get "/changes.txt"
     assert_equal last_response.body, second_text
+    assert_equal 'changes.txt has been successfully changed.', session[:message]
+    get '/'
+    refute_equal 'changes.txt has been successfully changed.', session[:message]
   end
 
   def test_new_doc_page
@@ -116,10 +129,18 @@ Check out the [documentation](https://ruby-doc.org/)
     assert_includes last_response.body, "<label for='document_name'>Add a new document:"
   end
 
+  def test_file_already_exists
+    create_document 'available.txt'
+    post '/new', document_name: "available.txt"
+    assert_equal "available.txt already exists.", session[:message]
+  end
+
   def test_creates_new_file
     post '/new', document_name: "test.md"
     assert exists?("test.md")
     assert_equal 302, last_response.status
+
+    assert_equal "test.md has been created", session[:message]
 
     get last_response["Location"]
     assert_includes last_response.body, "test.md has been created"
@@ -136,13 +157,47 @@ Check out the [documentation](https://ruby-doc.org/)
 
     assert exists?('document.txt')
     post '/document.txt/delete'
+    assert_equal 'document.txt has been deleted from the file system.', session[:message]
     assert_equal 302, last_response.status
 
     refute exists?("document.txt")
-    
+
     get last_response['Location']
     refute_includes last_response.body, '>document.txt</a>'
     assert_includes last_response.body, 'second_doc.txt</a>'
+  end
+
+  def test_sets_session_value
+    get '/signout'
+    post "/login", {username: "admin", password: "topsecretpassword"}
+    assert_equal({username: "admin"}, session[:token])
+  end
+
+  def test_signin
+    assert_equal "Welcome", session[:message]    
+  end
+
+  def test_no_such_user
+    get '/signout'
+    post "/login", {username: "some_fake_user", password: "topsecretpassword"}
+    assert_equal "User does not exist", session[:message]
+  end
+
+    def test_wrong_password
+    get '/signout'
+    post "/login", {username: "admin", password: "fakepassword"}
+    assert_equal "The password is incorrect", session[:message]
+  end
+
+
+  def test_signout
+    get '/signout'
+    assert_equal 'You are logged out.', session[:message]
+    assert_nil session[:token]
+    get '/'
+    assert_equal 303, last_response.status
+    get last_response['Location']
+    assert_includes last_response.body, "<label for='username'>Username:</label>"
   end
  
 end
