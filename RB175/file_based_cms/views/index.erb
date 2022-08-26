@@ -3,7 +3,12 @@
   <% @files.each do |file| %>
     <li class='document-list'>
     <a class ='document' href='/<%= hattr(file) %>'><%= file %></a> 
-    <a class ='edit-button' href='/<%= hattr(file) %>/edit'>Edit Document</a>
+    <a class ='btn edit' href='/<%= hattr(file) %>/edit'>Edit Document</a>
+    <form method='post' action='/<%= hattr(file) %>/delete' class='delete-form'>
+      <button class='btn delete' type='submit'>Delete</button>
+    </form>
     </li>
   <% end %>
 </ul>
+
+<a href='/new' class='btn'>Create New Document</a>

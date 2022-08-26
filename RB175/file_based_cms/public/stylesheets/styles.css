@@ -3,25 +3,14 @@ body {
   font-family: sans-serif;
 }
 
-.edit-button, .edit-button::after, .edit-button:link {
-  text-decoration: none;
-  color:darkcyan; 
-  padding: 1em;
-  margin: 1em;
-  border-style: 2px solid
-}
-.edit-button:hover {
-  color:aquamarine;
-}
-
 .document,
 .document::after,
 .document:link {
   text-decoration: none;
-    color:darkolivegreen;
-    font-size:1.5em;
-    border-style: 2px solid;
-    
+  color:darkolivegreen;
+  font-size:1.5em;
+  border-style: 2px solid;
+  padding-right: 20px;  
 }
 .document:hover {
   color:black;
@@ -32,7 +21,45 @@ body {
 }
 
 .flash-message {
-  background-color: rgb(222, 107, 130);
-  padding: 1em;
+  background-color: rgb(238, 242, 204);
+  padding: 10px;
   font-size: 1.5em;
+}
+
+.btn, .btn::after, .btn:link {
+  text-decoration: none;
+  color:dodgerblue;
+  padding: 3px 6px 2px 6px;
+  border: 2px solid dodgerblue;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color:lavender;
+}
+.document-list form {
+  display:inline;
+}
+
+.delete {
+  color:rgb(222, 107, 130);
+  border: 2px solid rgb(222, 107, 130);
+}
+.delete:hover{
+  background-color:firebrick;
+}
+
+.edit {
+  color:darkcyan !important;
+  border: 2px solid darkcyan !important;
+}
+.edit:hover {
+  background-color:lightgreen;
+}
+
+.login label {
+  color:darkslategrey;
+}
+.login input {
+  margin: .8em;
 }

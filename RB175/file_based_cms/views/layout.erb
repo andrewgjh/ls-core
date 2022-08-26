@@ -10,10 +10,15 @@
   </head>
   <body>
     <header>
-      <h1>Content Management System</h1>
+      <h1>Content Management System</h1> 
+      <% if session[:token] %>
+        <span>Logged In As: <%= session[:token][:username] %></span>
+        <a href='/signout' class='btn sign-out'>Sign Out</a>
+      <% end %>
     </header>
     <main>
       <%= yield %>
     </main>
+
   </body>
 </html>

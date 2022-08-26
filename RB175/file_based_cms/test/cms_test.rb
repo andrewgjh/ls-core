@@ -110,5 +110,39 @@ Check out the [documentation](https://ruby-doc.org/)
     assert_equal last_response.body, second_text
   end
 
+  def test_new_doc_page
+    get '/new'
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "<label for='document_name'>Add a new document:"
+  end
+
+  def test_creates_new_file
+    post '/new', document_name: "test.md"
+    assert exists?("test.md")
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+    assert_includes last_response.body, "test.md has been created"
+  end
+
+  def test_add_txt_extension_when_not_provided
+    post '/new', document_name: "without_ext"
+    assert exists?("without_ext.txt")
+  end
+
+  def test_deleting_file
+    create_document 'document.txt'
+    create_document 'second_doc.txt'
+
+    assert exists?('document.txt')
+    post '/document.txt/delete'
+    assert_equal 302, last_response.status
+
+    refute exists?("document.txt")
+    
+    get last_response['Location']
+    refute_includes last_response.body, '>document.txt</a>'
+    assert_includes last_response.body, 'second_doc.txt</a>'
+  end
  
 end
