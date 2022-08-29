@@ -1,10 +1,25 @@
-require "sinatra"
-require "sinatra/reloader"
+require 'sinatra'
+require 'sinatra/reloader'
 require 'erubis'
 require 'redcarpet'
+require 'yaml'
+require 'bcrypt'
 
 
-USERS = { "admin"=>"topsecretpassword"}
+
+def cred_path 
+  start_path = ENV['RACK_ENV'] == 'test' ? "test" : __dir__
+  File.join(start_path, 'users.yml')
+end
+
+USERS = YAML.load_file(cred_path)
+
+
+def reload_users
+   File.open(cred_path, 'w') do |file|
+    YAML.dump(USERS, file)
+  end
+end
 
 def render_markdown(text)
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML, fenced_code_blocks: true)
@@ -19,7 +34,7 @@ def find_file(path)
 end
 
 def exists?(name)
-  Dir[data_path+"/*"].any? {|filename| File.basename(filename) == name}
+  Dir[data_path + '/*'].any? { |filename| File.basename(filename) == name }
 end
 
 def load_content(file_path)
@@ -27,24 +42,21 @@ def load_content(file_path)
   case File.extname(file_path)
   when '.md'
     erb render_markdown(content)
-  when ".txt"
-    headers["Content-Type"] = "text/plain"
+  when '.txt'
+    headers['Content-Type'] = 'text/plain'
     content
-  else 
+  else
     send_file file_path
   end
 end
 
 def data_path
-  if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/data", __FILE__)
-  else
-    File.expand_path("../data", __FILE__)
-  end
+  path_endpoint = ENV['RACK_ENV'] == 'test' ? 'test/data' : 'data'
+  File.expand_path(path_endpoint, __dir__)
 end
 
 def create(file_name)
-  file_name += '.txt' if File.extname(file_name) == ""
+  file_name += '.txt' if File.extname(file_name) == ''
   File.open(File.join(data_path, file_name), 'w')
   session[:message] = "#{file_name} has been created"
 end
@@ -54,21 +66,36 @@ def authenticated?
 end
 
 def user_exist?(username)
-  session[:message] = "User does not exist" unless USERS.key?(username)
+  session[:message] = 'User does not exist' unless USERS.key?(username)
   USERS.key?(username)
 end
 
 def password_check(username, password)
-  session[:message] = "The password is incorrect" unless USERS[username] == password
+  session[:message] = 'The password is incorrect' unless USERS[username] == password
   USERS[username] == password
 end
 
 def verify(username, password)
-  if user_exist?(username) && password_check(username, password)
-    session[:token] = {username: username}
+  session[:token] = { username: } if user_exist?(username) && password_check(username, password)
+end
+
+def user_signed_in?
+  session.key?(:token) && !session[:token].nil?
+end
+
+def require_signed_in_user
+  unless user_signed_in?
+    session[:message] = 'You must be signed in to do that.'
+    redirect '/'
   end
 end
 
+def admin_only
+  unless session[:token] == { username: 'admin' }
+    session[:message] = 'The resouce is only accessible by an administrator.'
+    redirect '/'
+  end
+end
 
 configure do
   enable :sessions
@@ -85,41 +112,50 @@ helpers do
   end
 end
 
-before do
-  unless request.path == "/login"
-    redirect "/login", 303 unless authenticated?
-  else
-    redirect '/' if authenticated?
-  end
+get '/users' do
+  admin_only
+  erb :users
 end
 
+post '/users' do
+  admin_only
+  username = params[:username]
+  password = params[:password]
+  USERS[username] = BCrypt::Password.create(password)
+  reload_users
+  redirect '/users'
+end
+
+delete '/users/:account' do |account|  
+  USERS.delete(account)
+  reload_users
+  status 204
+end
 
 get '/' do
-    @files = []
-    path = File.join(data_path, "*")
-    Dir[path].each do |entry|
-      @files << File.basename(entry) if File.file?(entry)
-    end
+  @files = []
+  path = File.join(data_path, '*')
+  Dir[path].each do |entry|
+    @files << File.basename(entry) if File.file?(entry)
+  end
   erb :index
 end
-
 
 get '/new' do
   erb :new
 end
 
 post '/new' do
-
+  require_signed_in_user
 
   new_file = params[:document_name]
-  unless exists?(new_file)
-    create(new_file)
-    redirect '/'
-  else
+  if exists?(new_file)
     session[:message] = "#{new_file} already exists."
     redirect '/'
+  else
+    create(new_file)
+    redirect '/'
   end
-  
 end
 
 get '/login' do
@@ -131,34 +167,34 @@ post '/login' do
   password = params[:password]
   verify username, password
   if authenticated?
-    session[:message] = "Welcome"
-    redirect "/"
+    session[:message] = 'Welcome'
+    redirect '/'
   else
-    redirect "/login"
+    redirect '/login'
   end
 end
 
 get '/signout' do
-  session[:token] = nil
-  session[:message] = "You are logged out."
+  session.delete(:token)
+  session[:message] = 'You are logged out.'
   redirect '/login'
 end
 
-
-
-get '/:filename' do |filename| 
+get '/:filename' do |filename|
   file_path = File.join(data_path, filename)
   find_file(file_path)
   load_content(file_path)
 end
 
-post "/:filename/delete" do |filename|
+post '/:filename/delete' do |filename|
+  require_signed_in_user
   File.delete(File.join(data_path, filename))
   session[:message] = "#{filename} has been deleted from the file system."
   redirect '/'
 end
 
 get '/:filename/edit' do |filename|
+  require_signed_in_user
   file_path = File.join(data_path, filename)
   @filename = filename
   @content = File.read(file_path)
@@ -166,11 +202,10 @@ get '/:filename/edit' do |filename|
 end
 
 post '/:filename' do |filename|
+  require_signed_in_user
   file_path = File.join(data_path, filename)
   updated_content = params[:file_content]
   File.write(file_path, updated_content)
   session[:message] = "#{filename} has been successfully changed."
-  redirect "/"
+  redirect '/'
 end
-
-

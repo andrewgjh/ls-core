@@ -1,0 +1,25 @@
+<table>
+  <tr>
+    <td><strong>Username</strong></td>
+    <td><strong>Delete User</strong></td>
+  </tr>
+  <% USERS.each do |user,_|%>
+    <tr id='usr_row_<%= user %>'>
+      <td><%= user %></td>
+      <td ><a id ='delete-<%= user %>' class='btn delete'>Delete</a></td>
+    </tr>
+  <% end  %>
+</table>
+
+<hr>
+
+<h2>Add new User</h2>
+<form class='login' action='/users' method='post'>
+  <label for='username'>Username:</label>
+  <input type=text name='username'>
+  <br>
+  <label for='password'> Password:</label>
+  <input type='password' name='password'>
+  <br>
+  <button class='btn' type='submit'>Create User</button>
+</form>

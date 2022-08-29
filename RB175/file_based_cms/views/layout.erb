@@ -4,6 +4,8 @@
     <title>CMS App</title>
     <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/styles.css' type='text/css'>
+    <script src='/javascripts/jquery-3.6.1.js'></script>
+    <script src='/javascripts/application.js'></script>
     <% if session[:message] %>
       <h3 class='flash-message'><%= session.delete(:message) %></h3>
     <% end %>
@@ -14,6 +16,8 @@
       <% if session[:token] %>
         <span>Logged In As: <%= session[:token][:username] %></span>
         <a href='/signout' class='btn sign-out'>Sign Out</a>
+      <% elsif request.path != '/login' %>
+        <a href='/login' class='btn sign-out'>Sign In</a>
       <% end %>
     </header>
     <main>

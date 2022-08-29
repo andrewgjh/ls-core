@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    bcrypt (3.1.18)
     erubis (2.7.0)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
@@ -35,6 +36,7 @@ PLATFORMS
   arm64-darwin-21
 
 DEPENDENCIES
+  bcrypt (~> 3.1.12)
   erubis
   minitest
   rack-test

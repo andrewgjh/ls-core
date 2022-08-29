@@ -17,6 +17,10 @@ def session
   last_request.env["rack.session"]
 end
 
+def admin_session
+  { "rack.session" => { token: {username: "admin"} } }
+end
+
 
 class CMSTest < MiniTest::Test
   include Rack::Test::Methods
@@ -27,7 +31,7 @@ class CMSTest < MiniTest::Test
 
   def setup
     FileUtils.mkdir_p(data_path)
-    post "/login", {username: "admin", password: "topsecretpassword"}
+    get '/' , {}, admin_session
   end
     def teardown
     FileUtils.rm_rf(data_path)
@@ -38,7 +42,7 @@ class CMSTest < MiniTest::Test
     create_document 'changes.txt'
     create_document 'history.txt'
 
-    get '/'
+    get '/' 
 
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response["Content-Type"]
@@ -174,6 +178,7 @@ Check out the [documentation](https://ruby-doc.org/)
   end
 
   def test_signin
+    post '/login', {username: "admin", password: "topsecretpassword"}
     assert_equal "Welcome", session[:message]    
   end
 
@@ -195,9 +200,28 @@ Check out the [documentation](https://ruby-doc.org/)
     assert_equal 'You are logged out.', session[:message]
     assert_nil session[:token]
     get '/'
-    assert_equal 303, last_response.status
-    get last_response['Location']
-    assert_includes last_response.body, "<label for='username'>Username:</label>"
+  
+    assert_includes last_response.body, "<a href='/login' class='btn sign-out'>Sign In</a>"
+  end
+
+  def test_non_admin_rejection_user_page
+    get '/signout'
+    get '/users', {}, { "rack.session" => { token: {username: "not_an_admin"} } }
+    assert_equal "The resouce is only accessible by an administrator.", session[:message]
+  end
+
+  def test_admin_users_pages
+    get '/users'
+    assert_includes last_response.body, "<table>
+  <tr>
+    <td><strong>Username</strong></td>
+    <td><strong>Delete User</strong></td>
+  </tr>"
+  end
+
+  def test_admin_post_users
+    post '/users', {username: "test_user", password: "123456"}
+    
   end
  
 end
