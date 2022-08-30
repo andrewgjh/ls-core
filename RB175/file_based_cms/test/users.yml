@@ -1,2 +1,3 @@
 ---
-admin: topsecretpassword
+admin: "$2a$12$ASSSxSmmK2/ILtSNq4uqsO9bvKJVkIM.Yyqdry1zf974lbGdXsgZe"
+test_user: "$2a$12$dbwXGb8EsSiqDui6ag8RV.MXvPUdLwWOuwKpuJswTh4xW4eLanJA."

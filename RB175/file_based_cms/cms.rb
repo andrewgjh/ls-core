@@ -5,18 +5,15 @@ require 'redcarpet'
 require 'yaml'
 require 'bcrypt'
 
-
-
-def cred_path 
-  start_path = ENV['RACK_ENV'] == 'test' ? "test" : __dir__
+def cred_path
+  start_path = ENV['RACK_ENV'] == 'test' ? 'test' : __dir__
   File.join(start_path, 'users.yml')
 end
 
 USERS = YAML.load_file(cred_path)
 
-
 def reload_users
-   File.open(cred_path, 'w') do |file|
+  File.open(cred_path, 'w') do |file|
     YAML.dump(USERS, file)
   end
 end
@@ -71,8 +68,9 @@ def user_exist?(username)
 end
 
 def password_check(username, password)
-  session[:message] = 'The password is incorrect' unless USERS[username] == password
-  USERS[username] == password
+  hsh_pw = BCrypt::Password.new(USERS[username])
+  session[:message] = 'The password is incorrect' unless hsh_pw == password
+  hsh_pw == password
 end
 
 def verify(username, password)
@@ -121,12 +119,13 @@ post '/users' do
   admin_only
   username = params[:username]
   password = params[:password]
-  USERS[username] = BCrypt::Password.create(password)
+  pw_digest = BCrypt::Password.create(password).to_s
+  USERS[username] = pw_digest
   reload_users
   redirect '/users'
 end
 
-delete '/users/:account' do |account|  
+delete '/users/:account' do |account|
   USERS.delete(account)
   reload_users
   status 204
